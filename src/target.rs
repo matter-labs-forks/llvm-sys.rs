@@ -136,6 +136,13 @@ extern "C" {
     pub fn LLVMInitializeWebAssemblyAsmPrinter();
     pub fn LLVMInitializeWebAssemblyAsmParser();
     pub fn LLVMInitializeWebAssemblyDisassembler();
+
+    pub fn LLVMInitializeSyncVMTargetInfo();
+    pub fn LLVMInitializeSyncVMTarget();
+    pub fn LLVMInitializeSyncVMTargetMC();
+    pub fn LLVMInitializeSyncVMAsmPrinter();
+    pub fn LLVMInitializeSyncVMAsmParser();
+    pub fn LLVMInitializeSyncVMDisassembler();
 }
 
 extern "C" {
