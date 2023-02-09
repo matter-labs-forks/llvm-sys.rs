@@ -19,4 +19,6 @@ extern "C" {
     ///
     /// Added in LLVM 3.7.
     pub fn LLVMAddSymbol(symbolName: *const ::libc::c_char, symbolValue: *mut ::libc::c_void);
+    /// Gets the commit hash of the zkEVM LLVM framework.
+    pub fn LLVMPrintCommitIDTo(Buf: *mut ::libc::c_char);
 }
