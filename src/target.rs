@@ -136,6 +136,13 @@ extern "C" {
     pub fn LLVMInitializeSyncVMAsmPrinter();
     pub fn LLVMInitializeSyncVMAsmParser();
     pub fn LLVMInitializeSyncVMDisassembler();
+
+    pub fn LLVMInitializeEVMTargetInfo();
+    pub fn LLVMInitializeEVMTarget();
+    pub fn LLVMInitializeEVMTargetMC();
+    pub fn LLVMInitializeEVMAsmPrinter();
+    pub fn LLVMInitializeEVMAsmParser();
+    pub fn LLVMInitializeEVMDisassembler();
 }
 
 extern "C" {
