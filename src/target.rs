@@ -130,12 +130,12 @@ extern "C" {
     pub fn LLVMInitializeWebAssemblyAsmParser();
     pub fn LLVMInitializeWebAssemblyDisassembler();
 
-    pub fn LLVMInitializeSyncVMTargetInfo();
-    pub fn LLVMInitializeSyncVMTarget();
-    pub fn LLVMInitializeSyncVMTargetMC();
-    pub fn LLVMInitializeSyncVMAsmPrinter();
-    pub fn LLVMInitializeSyncVMAsmParser();
-    pub fn LLVMInitializeSyncVMDisassembler();
+    pub fn LLVMInitializeEraVMTargetInfo();
+    pub fn LLVMInitializeEraVMTarget();
+    pub fn LLVMInitializeEraVMTargetMC();
+    pub fn LLVMInitializeEraVMAsmPrinter();
+    pub fn LLVMInitializeEraVMAsmParser();
+    pub fn LLVMInitializeEraVMDisassembler();
 }
 
 extern "C" {
