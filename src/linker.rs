@@ -23,7 +23,7 @@ extern "C" {
     pub fn LLVMLinkMemoryBuffers(
         InMemBufs: *const LLVMMemoryBufferRef,
         NumInBufs: ::libc::c_uint,
-        OutMemBuf: LLVMMemoryBufferRef,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
         LldArgs: *const *const ::libc::c_char,
         NumLldArgs: ::libc::c_uint,
     ) -> LLVMBool;
