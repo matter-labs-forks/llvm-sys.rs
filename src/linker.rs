@@ -16,4 +16,12 @@ extern "C" {
     /// Destroys the source module, returns true on error. Use the diagnostic
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
+    
+    /// Link EraVM module.
+    ///
+    /// Removes the ELF wrapper from an EraVM module.
+    pub fn LLVMLinkEraVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+    ) -> LLVMBool;
 }
