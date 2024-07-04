@@ -1,5 +1,7 @@
 //! The module/file/archive linker
 
+use crate::target_machine::LLVMTargetMachineRef;
+
 use super::prelude::*;
 
 #[repr(C)]
@@ -11,6 +13,16 @@ pub enum LLVMLinkerMode {
 }
 
 extern "C" {
+    /// Call the assembler library with `InMemBuf` containing assembly.
+    /// 
+    /// The unlinked bytecode is written to `OutMemBuf`, which must then be
+    /// passed to `LLVMLinkEraVM`.
+    pub fn LLVMAssembleEraVM(
+        TargetMachine: LLVMTargetMachineRef,
+        InMemBuf: LLVMMemoryBufferRef,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+    ) -> LLVMBool;
+    
     /// Link the source module into the destination module.
     ///
     /// Destroys the source module, returns true on error. Use the diagnostic
