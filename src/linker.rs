@@ -13,12 +13,25 @@ pub enum LLVMLinkerMode {
 }
 
 extern "C" {
-    /// Call the assembler library with `InMemBuf` containing assembly.
+    /// Translate textual assembly to object code.
     /// 
-    /// The unlinked bytecode is written to `OutMemBuf`, which must then be
-    /// passed to `LLVMLinkEraVM`.
+    /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
+    /// passed to `LLVMLinkEraVM` for linkage.
     pub fn LLVMAssembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
+        InMemBuf: LLVMMemoryBufferRef,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+    ) -> LLVMBool;
+
+    /// Check if the bytecode fits into the EraVM size limit.
+    pub fn LLVMExceedsSizeLimitEraVM(
+        InMemBuf: LLVMMemoryBufferRef,
+    ) -> LLVMBool;
+    
+    /// Link EraVM module.
+    ///
+    /// Removes the ELF wrapper from an EraVM module.
+    pub fn LLVMLinkEraVM(
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
     ) -> LLVMBool;
@@ -28,12 +41,4 @@ extern "C" {
     /// Destroys the source module, returns true on error. Use the diagnostic
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
-    
-    /// Link EraVM module.
-    ///
-    /// Removes the ELF wrapper from an EraVM module.
-    pub fn LLVMLinkEraVM(
-        InMemBuf: LLVMMemoryBufferRef,
-        OutMemBuf: *mut LLVMMemoryBufferRef,
-    ) -> LLVMBool;
 }
