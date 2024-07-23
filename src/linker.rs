@@ -21,11 +21,13 @@ extern "C" {
         TargetMachine: LLVMTargetMachineRef,
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
+        ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
     /// Check if the bytecode fits into the EraVM size limit.
     pub fn LLVMExceedsSizeLimitEraVM(
         InMemBuf: LLVMMemoryBufferRef,
+        MetadataSize: ::libc::c_uint,
     ) -> LLVMBool;
     
     /// Link EraVM module.
@@ -34,6 +36,9 @@ extern "C" {
     pub fn LLVMLinkEraVM(
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
+        MetadataPtr: *const ::libc::c_char,
+        MetadataSize: ::libc::c_uint,
+        ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
     
     /// Link the source module into the destination module.
