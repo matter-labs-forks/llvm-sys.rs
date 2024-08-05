@@ -648,11 +648,24 @@ fn main() {
     // Link system libraries
     // We get the system libraries based on the kind of LLVM libraries we link to, but we link to
     // system libs based on the target environment.
-    let sys_lib_kind = if target_env_is("musl") {
+    let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or(String::new());
+
+    let sys_lib_kind = if target_env_is("musl") || linkage.contains("crt-static") {
         LibraryKind::Static
     } else {
         LibraryKind::Dynamic
     };
+
+    // Add search paths for the Linux system static libraries
+    // when linking with GNU libc and libstdc++ statically.
+    // These paths cannot be added automatically by llvm-config.
+    if linkage.contains("crt-static") && target_env_is("gnu") {
+        let arch = env::var("CARGO_CFG_TARGET_ARCH")
+            .expect("Unable to define search paths for system static libraries: CARGO_CFG_TARGET_ARCH is not set.");
+        println!("cargo:rustc-link-search=native=/lib/{}-linux-gnu", arch);
+        println!("cargo:rustc-link-search=native=/lib/gcc/{}-linux-gnu/11", arch);
+    }
+
     for name in get_system_libraries(&llvm_config_path, kind) {
         println!("cargo:rustc-link-lib={}={}", sys_lib_kind.string(), name);
     }
