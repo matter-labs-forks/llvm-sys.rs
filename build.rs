@@ -419,6 +419,7 @@ fn get_link_libraries(
     fn get_link_libraries_impl(
         llvm_config_path: &Path,
         kind: LibraryKind,
+        project: Option<&str>,
     ) -> anyhow::Result<String> {
         // Windows targets don't get dynamic support.
         // See: https://gitlab.com/taricorp/llvm-sys.rs/-/merge_requests/31#note_1306397918
@@ -430,7 +431,11 @@ fn get_link_libraries(
             LibraryKind::Static => "--link-static",
             LibraryKind::Dynamic => "--link-shared",
         };
-        llvm_config_ex(llvm_config_path, ["--libnames", link_arg])
+        let mut args = vec!["--libnames", link_arg];
+        if let Some(project) = project {
+            args.push(project);
+        }
+        llvm_config_ex(llvm_config_path, args)
     }
 
     let LinkingPreferences {
@@ -451,18 +456,24 @@ fn get_link_libraries(
         });
 
     for kind in preferences {
-        match get_link_libraries_impl(llvm_config_path, kind) {
-            Ok(s) => return (kind, extract_library(&s, kind)),
-            Err(err) => {
-                println!(
-                    "failed to get {} libraries from llvm-config: {err:?}",
-                    kind.string()
-                )
+        let mut libraries = Vec::new();
+        for project in [None, Some("lld")] {
+            match get_link_libraries_impl(llvm_config_path, kind, project) {
+                Ok(s) => {
+                    libraries.extend(extract_library(&s, kind));
+                },
+                Err(err) => {
+                    println!(
+                        "failed to get {} libraries from llvm-config: {err:?}",
+                        kind.string()
+                    );
+                }
             }
         }
+        return (kind, libraries);
     }
 
-    panic!("failed to get linking libraries from llvm-config",);
+    panic!("failed to get linking libraries from llvm-config");
 }
 
 fn extract_library(s: &str, kind: LibraryKind) -> Vec<String> {
