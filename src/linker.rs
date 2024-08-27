@@ -24,6 +24,20 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
+    /// Disassembles the bytecode passed in `InBuffer`` starting at the offset `PC`.
+    /// 
+    /// The result is returned via `OutBuffer``.
+    /// In case of an error the function returns 'true' and an error message is passed
+    /// via `ErrorMessage``. The message should be disposed with `LLVMDisposeMessage`.
+    pub fn LLVMDisassembleEraVM(
+        TargetMachine: LLVMTargetMachineRef,
+        InMemBuf: LLVMMemoryBufferRef,
+        PC: ::libc::c_uint,
+        Options: ::libc::c_uint,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+        ErrorMessage: *mut *mut ::libc::c_char,
+    ) -> LLVMBool;
+
     /// Check if the bytecode fits into the EraVM size limit.
     pub fn LLVMExceedsSizeLimitEraVM(
         InMemBuf: LLVMMemoryBufferRef,
