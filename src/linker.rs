@@ -29,6 +29,8 @@ extern "C" {
     /// The result is returned via `OutBuffer``.
     /// In case of an error the function returns 'true' and an error message is passed
     /// via `ErrorMessage``. The message should be disposed with `LLVMDisposeMessage`.
+    /// 
+    /// Added in LLVM patch: https://github.com/matter-labs/era-compiler-llvm/pull/692
     pub fn LLVMDisassembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
         InMemBuf: LLVMMemoryBufferRef,
