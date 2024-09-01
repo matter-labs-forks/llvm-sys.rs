@@ -350,7 +350,7 @@ fn get_system_libraries(llvm_config_path: &Path, kind: LibraryKind) -> Vec<Strin
 /// In particular, this should include only directories that are known from platform-specific
 /// knowledge that aren't otherwise discovered from either `llvm-config` or a linked library
 /// that includes an absolute path.
-fn get_system_library_dirs() -> impl IntoIterator<Item=&'static str> {
+fn get_system_library_dirs() -> impl IntoIterator<Item = &'static str> {
     if target_os_is("openbsd") {
         Some("/usr/local/lib")
     } else {
@@ -461,7 +461,7 @@ fn get_link_libraries(
             match get_link_libraries_impl(llvm_config_path, kind, project) {
                 Ok(s) => {
                     libraries.extend(extract_library(&s, kind));
-                },
+                }
                 Err(err) => {
                     println!(
                         "failed to get {} libraries from llvm-config: {err:?}",
@@ -674,7 +674,10 @@ fn main() {
         let arch = env::var("CARGO_CFG_TARGET_ARCH")
             .expect("Unable to define search paths for system static libraries: CARGO_CFG_TARGET_ARCH is not set.");
         println!("cargo:rustc-link-search=native=/lib/{}-linux-gnu", arch);
-        println!("cargo:rustc-link-search=native=/lib/gcc/{}-linux-gnu/11", arch);
+        println!(
+            "cargo:rustc-link-search=native=/lib/gcc/{}-linux-gnu/11",
+            arch
+        );
     }
 
     for name in get_system_libraries(&llvm_config_path, kind) {

@@ -14,7 +14,7 @@ pub enum LLVMLinkerMode {
 
 extern "C" {
     /// Translate textual assembly to object code.
-    /// 
+    ///
     /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
     /// passed to `LLVMLinkEraVM` for linkage.
     pub fn LLVMAssembleEraVM(
@@ -25,11 +25,11 @@ extern "C" {
     ) -> LLVMBool;
 
     /// Disassembles the bytecode passed in `InBuffer`` starting at the offset `PC`.
-    /// 
+    ///
     /// The result is returned via `OutBuffer``.
     /// In case of an error the function returns 'true' and an error message is passed
     /// via `ErrorMessage``. The message should be disposed with `LLVMDisposeMessage`.
-    /// 
+    ///
     /// Added in LLVM patch: https://github.com/matter-labs/era-compiler-llvm/pull/692
     pub fn LLVMDisassembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
@@ -45,7 +45,7 @@ extern "C" {
         InMemBuf: LLVMMemoryBufferRef,
         MetadataSize: ::libc::c_uint,
     ) -> LLVMBool;
-    
+
     /// Link EraVM module.
     ///
     /// Removes the ELF wrapper from an EraVM module.
@@ -54,9 +54,12 @@ extern "C" {
         OutMemBuf: *mut LLVMMemoryBufferRef,
         MetadataPtr: *const ::libc::c_char,
         MetadataSize: ::libc::c_uint,
+        LinkerSymbols: *const *const ::libc::c_char,
+        LinkerSymbolValues: *const *const ::libc::c_char,
+        LinkerSymbolsSize: ::libc::c_uint,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
-    
+
     /// Link the source module into the destination module.
     ///
     /// Destroys the source module, returns true on error. Use the diagnostic
