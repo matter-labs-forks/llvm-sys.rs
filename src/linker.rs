@@ -40,6 +40,15 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
+    /// Add metadata to the ELF wrapper.
+    pub fn LLVMAddMetadataEraVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        MetadataPtr: *const ::libc::c_char,
+        MetadataSize: ::libc::c_uint,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+        ErrorMessage: *mut *mut ::libc::c_char,
+    ) -> LLVMBool;
+
     /// Check if the bytecode fits into the EraVM size limit.
     pub fn LLVMExceedsSizeLimitEraVM(
         InMemBuf: LLVMMemoryBufferRef,
@@ -48,12 +57,10 @@ extern "C" {
 
     /// Link EraVM module.
     ///
-    /// Removes the ELF wrapper from an EraVM module.
+    /// Removes the ELF wrapper from an EraVM module if all symbols are resolved.
     pub fn LLVMLinkEraVM(
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
-        MetadataPtr: *const ::libc::c_char,
-        MetadataSize: ::libc::c_uint,
         LinkerSymbols: *const *const ::libc::c_char,
         LinkerSymbolValues: *const *const ::libc::c_char,
         LinkerSymbolsSize: ::libc::c_uint,
