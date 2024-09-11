@@ -13,6 +13,15 @@ pub enum LLVMLinkerMode {
 }
 
 extern "C" {
+    /// Link the source module into the destination module.
+    ///
+    /// Destroys the source module, returns true on error. Use the diagnostic
+    /// handler to get any diagnostic message.
+    pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
+
+    /// Check whether the memory buffer is a valid ELF binary.
+    pub fn LLVMIsELF(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
+
     /// Translate textual assembly to object code.
     ///
     /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
@@ -24,7 +33,7 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
-    /// Disassembles the bytecode passed in `InBuffer`` starting at the offset `PC`.
+    /// Disassemble the bytecode passed in `InBuffer`` starting at the offset `PC`.
     ///
     /// The result is returned via `OutBuffer``.
     /// In case of an error the function returns 'true' and an error message is passed
@@ -55,6 +64,13 @@ extern "C" {
         MetadataSize: ::libc::c_uint,
     ) -> LLVMBool;
 
+    /// Return unresolved symbols from the ELF wrapper.
+    pub fn LLVMGetUndefinedSymbolsEraVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        LinkerSymbols: *mut *mut ::libc::c_char,
+        LinkerSymbolsSize: *mut ::libc::c_uint,
+    );
+
     /// Link EraVM module.
     ///
     /// Removes the ELF wrapper from an EraVM module if all symbols are resolved.
@@ -62,14 +78,8 @@ extern "C" {
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
         LinkerSymbols: *const *const ::libc::c_char,
-        LinkerSymbolValues: *const *const ::libc::c_char,
+        LinkerSymbolValues: *const ::libc::c_char,
         LinkerSymbolsSize: ::libc::c_uint,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
-
-    /// Link the source module into the destination module.
-    ///
-    /// Destroys the source module, returns true on error. Use the diagnostic
-    /// handler to get any diagnostic message.
-    pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 }
