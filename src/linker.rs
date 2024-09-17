@@ -19,9 +19,6 @@ extern "C" {
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 
-    /// Check whether the memory buffer is a valid ELF binary.
-    pub fn LLVMIsELF(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
-
     /// Translate textual assembly to object code.
     ///
     /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
@@ -49,6 +46,9 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
+    /// Check whether the memory buffer is a valid ELF binary.
+    pub fn LLVMIsELFEraVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
+
     /// Add metadata to the ELF wrapper.
     pub fn LLVMAddMetadataEraVM(
         InMemBuf: LLVMMemoryBufferRef,
@@ -65,11 +65,10 @@ extern "C" {
     ) -> LLVMBool;
 
     /// Return unresolved symbols from the ELF wrapper.
-    pub fn LLVMGetUndefinedSymbolsEraVM(
+    pub fn LLVMGetUndefinedLinkerSymbolsEraVM(
         InMemBuf: LLVMMemoryBufferRef,
-        LinkerSymbols: *mut *mut ::libc::c_char,
         LinkerSymbolsSize: *mut ::libc::c_uint,
-    );
+    ) -> *const *const ::libc::c_char;
 
     /// Link EraVM module.
     ///
