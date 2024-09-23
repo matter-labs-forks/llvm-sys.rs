@@ -40,8 +40,8 @@ extern "C" {
     pub fn LLVMDisassembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
         InMemBuf: LLVMMemoryBufferRef,
-        PC: ::libc::c_uint,
-        Options: ::libc::c_uint,
+        PC: u64,
+        Options: u64,
         OutMemBuf: *mut LLVMMemoryBufferRef,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
@@ -53,21 +53,18 @@ extern "C" {
     pub fn LLVMAddMetadataEraVM(
         InMemBuf: LLVMMemoryBufferRef,
         MetadataPtr: *const ::libc::c_char,
-        MetadataSize: ::libc::c_uint,
+        MetadataSize: u64,
         OutMemBuf: *mut LLVMMemoryBufferRef,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
     /// Check if the bytecode fits into the EraVM size limit.
-    pub fn LLVMExceedsSizeLimitEraVM(
-        InMemBuf: LLVMMemoryBufferRef,
-        MetadataSize: ::libc::c_uint,
-    ) -> LLVMBool;
+    pub fn LLVMExceedsSizeLimitEraVM(InMemBuf: LLVMMemoryBufferRef, MetadataSize: u64) -> LLVMBool;
 
     /// Return unresolved symbols from the ELF wrapper.
     pub fn LLVMGetUndefinedLinkerSymbolsEraVM(
         InMemBuf: LLVMMemoryBufferRef,
-        LinkerSymbolsSize: *mut ::libc::c_uint,
+        LinkerSymbolsSize: *mut u64,
     ) -> *const *const ::libc::c_char;
 
     /// Link EraVM module.
@@ -78,7 +75,7 @@ extern "C" {
         OutMemBuf: *mut LLVMMemoryBufferRef,
         LinkerSymbols: *const *const ::libc::c_char,
         LinkerSymbolValues: *const ::libc::c_char,
-        LinkerSymbolsSize: ::libc::c_uint,
+        LinkerSymbolsSize: u64,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 }
