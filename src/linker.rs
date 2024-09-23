@@ -19,17 +19,6 @@ extern "C" {
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 
-    /// Link EVM modules.
-    ///
-    /// Is supposed to link both EVM deploy and runtime code, and CREATE dependencies.
-    pub fn LLVMLinkMemoryBuffers(
-        InMemBufs: *const LLVMMemoryBufferRef,
-        NumInBufs: u64,
-        OutMemBuf: *mut LLVMMemoryBufferRef,
-        LldArgs: *const *const ::libc::c_char,
-        NumLldArgs: u64,
-    ) -> LLVMBool;
-
     /// Translate textual assembly to object code.
     ///
     /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
