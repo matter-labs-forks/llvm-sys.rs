@@ -51,8 +51,8 @@ extern "C" {
     pub fn LLVMDisassembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
         InMemBuf: LLVMMemoryBufferRef,
-        PC: u32,
-        Options: u32,
+        PC: u64,
+        Options: u64,
         OutMemBuf: *mut LLVMMemoryBufferRef,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
