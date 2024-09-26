@@ -21,13 +21,28 @@ extern "C" {
 
     /// Link EVM modules.
     ///
-    /// Is supposed to link both EVM deploy and runtime code, and CREATE dependencies.
-    pub fn LLVMLinkMemoryBuffers(
+    /// This function generates a linker script for EVM architecture.
+    /// `memBufs` - array of input memory buffers with following structure:
+    ///
+    ///   memBufs[0] - deploy object code
+    ///   memBufs[1] - deplyed(runtime) object code
+    ///   --------------------------
+    ///   memBufs[2] - 1-st sub-contract (final EVM bytecode)
+    ///   ...
+    ///   memBufs[N] - N-st sub-contract (final EVM bytecode)
+    ///
+    /// Sub contracts are optional. They should have the same ordering as in
+    /// the YUL layout.
+    ///
+    /// `bufIDs` - array of string identifiers of the buffers. IDs correspond
+    /// to the object names in the YUL layout.
+    ///
+    /// In case of success it returns final deploy and deployed bytecodes.
+    pub fn LLVMLinkEVM(
         InMemBufs: *const LLVMMemoryBufferRef,
-        NumInBufs: ::libc::c_uint,
-        OutMemBuf: *mut LLVMMemoryBufferRef,
-        LldArgs: *const *const ::libc::c_char,
-        NumLldArgs: ::libc::c_uint,
+        InMemBufIDs: *const *const ::libc::c_char,
+        NumInBufs: u64,
+        OutMemBufs: *mut [LLVMMemoryBufferRef; 2],
     ) -> LLVMBool;
 
     /// Translate textual assembly to object code.
