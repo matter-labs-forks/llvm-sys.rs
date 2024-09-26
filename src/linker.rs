@@ -43,6 +43,7 @@ extern "C" {
         InMemBufIDs: *const *const ::libc::c_char,
         NumInBufs: u64,
         OutMemBufs: *mut [LLVMMemoryBufferRef; 2],
+        ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
     /// Translate textual assembly to object code.
