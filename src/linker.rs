@@ -96,6 +96,12 @@ extern "C" {
         LinkerSymbolsSize: *mut u64,
     ) -> *const *const ::libc::c_char;
 
+    /// Dispose the unresolved symbols.
+    pub fn LLVMDisposeUndefinedLinkerSymbolsEraVM(
+        LinkerSymbols: *const *const ::libc::c_char,
+        LinkerSymbolsSize: u64,
+    );
+
     /// Link EraVM module.
     ///
     /// Removes the ELF wrapper from an EraVM module if all symbols are resolved.
