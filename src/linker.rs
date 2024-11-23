@@ -90,16 +90,19 @@ extern "C" {
     /// Check if the bytecode fits into the EraVM size limit.
     pub fn LLVMExceedsSizeLimitEraVM(InMemBuf: LLVMMemoryBufferRef, MetadataSize: u64) -> LLVMBool;
 
-    /// Return unresolved symbols from the ELF wrapper.
-    pub fn LLVMGetUndefinedLinkerSymbolsEraVM(
+    /// Return undefined references of the ELF object.
+    pub fn LLVMGetUndefinedReferencesEraVM(
         InMemBuf: LLVMMemoryBufferRef,
+        LinkerSymbols: *mut *mut *mut ::libc::c_char,
         LinkerSymbolsSize: *mut u64,
-    ) -> *const *const ::libc::c_char;
+        FactoryDependencies: *mut *mut *mut ::libc::c_char,
+        FactoryDependenciesSize: *mut u64,
+    );
 
-    /// Dispose the unresolved symbols.
-    pub fn LLVMDisposeUndefinedLinkerSymbolsEraVM(
-        LinkerSymbols: *const *const ::libc::c_char,
-        LinkerSymbolsSize: u64,
+    /// Dispose the undefined references.
+    pub fn LLVMDisposeUndefinedReferencesEraVM(
+        References: *const *const ::libc::c_char,
+        ReferencesSize: u64,
     );
 
     /// Link EraVM module.
@@ -108,9 +111,12 @@ extern "C" {
     pub fn LLVMLinkEraVM(
         InMemBuf: LLVMMemoryBufferRef,
         OutMemBuf: *mut LLVMMemoryBufferRef,
-        LinkerSymbols: *const *const ::libc::c_char,
+        LinkerSymbolKeys: *const *const ::libc::c_char,
         LinkerSymbolValues: *const ::libc::c_char,
         LinkerSymbolsSize: u64,
+        FactoryDependencyKeys: *const *const ::libc::c_char,
+        FactoryDependencyValues: *const ::libc::c_char,
+        FactoryDependenciesSize: u64,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 }
