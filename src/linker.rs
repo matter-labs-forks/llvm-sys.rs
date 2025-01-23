@@ -34,12 +34,6 @@ extern "C" {
     /// Check whether the EVM memory buffer is a valid ELF binary.
     pub fn LLVMIsELFEVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
 
-    /// Dispose the undefined references.
-    pub fn LLVMDisposeUndefinedReferencesEVM(
-        References: *const *const ::libc::c_char,
-        ReferencesSize: u64,
-    );
-
     /// Translate textual assembly to object code.
     ///
     /// The unlinked EraVM bytecode is written to `OutMemBuf`, which must then be
@@ -107,7 +101,7 @@ extern "C" {
     ) -> LLVMBool;
 
     /// Dispose the undefined references.
-    pub fn LLVMDisposeUndefinedReferencesEraVM(
+    pub fn LLVMDisposeUndefinedReferences(
         References: *const *const ::libc::c_char,
         ReferencesSize: u64,
     );
