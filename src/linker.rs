@@ -31,6 +31,9 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
+    /// Check whether the EVM memory buffer is a valid ELF binary.
+    pub fn LLVMIsELFEVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
+
     /// Dispose the undefined references.
     pub fn LLVMDisposeUndefinedReferencesEVM(
         References: *const *const ::libc::c_char,
@@ -64,7 +67,7 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
-    /// Check whether the memory buffer is a valid ELF binary.
+    /// Check whether the EraVM memory buffer is a valid ELF binary.
     pub fn LLVMIsELFEraVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
 
     /// Add metadata to the ELF wrapper.
