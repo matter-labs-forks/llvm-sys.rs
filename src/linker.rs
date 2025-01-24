@@ -19,34 +19,20 @@ extern "C" {
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 
-    /// Links the deploy and runtime ELF object files using the information about
-    /// dependencies.
-    /// `inBuffers` - array of input memory buffers with following structure:
-    ///
-    /// `inBuffers[0]` - deploy ELF object code
-    /// `inBuffers[1]` - deployed (runtime) ELF object code
-    /// --------------------------
-    /// `inBuffers[2]` - 1-st sub-contract (final EVM bytecode)
-    /// ...
-    /// `inBuffers[N]` - N-st sub-contract (final EVM bytecode)
-    ///
-    /// Sub-contracts are optional. They should have the same ordering as in
-    /// the Yul layout.
-    ///
-    /// `inBuffersIDs` - array of string identifiers of the buffers. IDs correspond
-    /// to the object names in the Yul layout.
-    /// On success, `outBuffers[0]` will contain the deploy bytecode and `outBuffers[1]`
-    /// the runtime bytecode.
-    /// In case of an error the function returns `true` and the error message is
-    /// passes in `ErrorMessage`. The message should be disposed by
-    /// `LLVMDisposeMessage`.
+    /// Links the deploy and runtime ELF object files using the information about dependencies.
     pub fn LLVMLinkEVM(
         InMemBufs: *const LLVMMemoryBufferRef,
         InMemBufIDs: *const *const ::libc::c_char,
         NumInBufs: u64,
         OutMemBufs: *mut [LLVMMemoryBufferRef; 2],
+        LinkerSymbolKeys: *const *const ::libc::c_char,
+        LinkerSymbolValues: *const ::libc::c_char,
+        LinkerSymbolsSize: u64,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
+
+    /// Check whether the EVM memory buffer is a valid ELF binary.
+    pub fn LLVMIsELFEVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
 
     /// Translate textual assembly to object code.
     ///
@@ -75,7 +61,7 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
-    /// Check whether the memory buffer is a valid ELF binary.
+    /// Check whether the EraVM memory buffer is a valid ELF binary.
     pub fn LLVMIsELFEraVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
 
     /// Add metadata to the ELF wrapper.
@@ -99,12 +85,6 @@ extern "C" {
         FactoryDependenciesSize: *mut u64,
     );
 
-    /// Dispose the undefined references.
-    pub fn LLVMDisposeUndefinedReferencesEraVM(
-        References: *const *const ::libc::c_char,
-        ReferencesSize: u64,
-    );
-
     /// Link EraVM module.
     ///
     /// Removes the ELF wrapper from an EraVM module if all symbols are resolved.
@@ -119,4 +99,10 @@ extern "C" {
         FactoryDependenciesSize: u64,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
+
+    /// Dispose the undefined references.
+    pub fn LLVMDisposeUndefinedReferences(
+        References: *const *const ::libc::c_char,
+        ReferencesSize: u64,
+    );
 }
