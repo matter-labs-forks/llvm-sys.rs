@@ -19,6 +19,13 @@ extern "C" {
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 
+    /// Returns immutables and their offsets of the ELF object file passed in `InMemBuf`.
+    pub fn LLVMGetImmutablesEVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        immutableIDs: *mut *mut *mut ::libc::c_char,
+        immutableOffsets: *mut *mut u64,
+    ) -> u64;
+
     /// Links the deploy and runtime ELF object files using the information about dependencies.
     pub fn LLVMLinkEVM(
         InMemBufs: *const LLVMMemoryBufferRef,
@@ -33,6 +40,13 @@ extern "C" {
 
     /// Check whether the EVM memory buffer is a valid ELF binary.
     pub fn LLVMIsELFEVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
+
+    /// Dispose immutable names and their offsets returned by LLVMGetImmutablesEVM.
+    pub fn LLVMDisposeImmutablesEVM(
+        immutableIDs: *const *const ::libc::c_char,
+        immutableOffsets: *const u64,
+        numOfImmutables: u64,
+    );
 
     /// Translate textual assembly to object code.
     ///
