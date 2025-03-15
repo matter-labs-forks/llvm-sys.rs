@@ -29,6 +29,7 @@ extern "C" {
     /// Links all EVM dependencies with the main module.
     /// All input buffers must be valid ELF object files.
     pub fn LLVMAssembleEVM(
+        CodeSegment: u64,
         InMemBufs: *const LLVMMemoryBufferRef,
         InMemBufIDs: *const *const ::libc::c_char,
         NumInBufs: u64,
