@@ -26,12 +26,22 @@ extern "C" {
         immutableOffsets: *mut *mut u64,
     ) -> u64;
 
-    /// Links the deploy and runtime ELF object files using the information about dependencies.
-    pub fn LLVMLinkEVM(
+    /// Links all EVM dependencies with the main module.
+    /// All input buffers must be valid ELF object files.
+    pub fn LLVMAssembleEVM(
+        CodeSegment: u64,
         InMemBufs: *const LLVMMemoryBufferRef,
         InMemBufIDs: *const *const ::libc::c_char,
         NumInBufs: u64,
-        OutMemBufs: *mut [LLVMMemoryBufferRef; 2],
+        OutMemBuf: *mut LLVMMemoryBufferRef,
+        ErrorMessage: *mut *mut ::libc::c_char,
+    ) -> LLVMBool;
+
+    /// Resolves undefined linker symbols in the ELF object file `InMemBuf`.
+    /// Returns ELF object file if there remain unresolved linker symbols. Otherwise returns the bytecode.
+    pub fn LLVMLinkEVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
         LinkerSymbolKeys: *const *const ::libc::c_char,
         LinkerSymbolValues: *const ::libc::c_char,
         LinkerSymbolsSize: u64,
@@ -64,8 +74,6 @@ extern "C" {
     /// The result is returned via `OutBuffer``.
     /// In case of an error the function returns 'true' and an error message is passed
     /// via `ErrorMessage``. The message should be disposed with `LLVMDisposeMessage`.
-    ///
-    /// Added in LLVM patch: https://github.com/matter-labs/era-compiler-llvm/pull/692
     pub fn LLVMDisassembleEraVM(
         TargetMachine: LLVMTargetMachineRef,
         InMemBuf: LLVMMemoryBufferRef,
