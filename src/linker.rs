@@ -19,7 +19,7 @@ extern "C" {
     /// handler to get any diagnostic message.
     pub fn LLVMLinkModules2(Dest: LLVMModuleRef, Src: LLVMModuleRef) -> LLVMBool;
 
-    /// Returns immutables and their offsets of the ELF object file passed in `InMemBuf`.
+    /// Returns EVM immutables and their offsets of the ELF object file passed in `InMemBuf`.
     pub fn LLVMGetImmutablesEVM(
         InMemBuf: LLVMMemoryBufferRef,
         immutableIDs: *mut *mut *mut ::libc::c_char,
@@ -69,7 +69,7 @@ extern "C" {
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
-    /// Disassemble the bytecode passed in `InBuffer`` starting at the offset `PC`.
+    /// Disassemble the EraVM bytecode passed in `InBuffer`` starting at the offset `PC`.
     ///
     /// The result is returned via `OutBuffer``.
     /// In case of an error the function returns 'true' and an error message is passed
@@ -85,15 +85,6 @@ extern "C" {
 
     /// Check whether the EraVM memory buffer is a valid ELF binary.
     pub fn LLVMIsELFEraVM(InMemBuf: LLVMMemoryBufferRef) -> LLVMBool;
-
-    /// Add metadata to the ELF wrapper.
-    pub fn LLVMAddMetadataEraVM(
-        InMemBuf: LLVMMemoryBufferRef,
-        MetadataPtr: *const ::libc::c_char,
-        MetadataSize: u64,
-        OutMemBuf: *mut LLVMMemoryBufferRef,
-        ErrorMessage: *mut *mut ::libc::c_char,
-    ) -> LLVMBool;
 
     /// Check if the bytecode fits into the EraVM size limit.
     pub fn LLVMExceedsSizeLimitEraVM(InMemBuf: LLVMMemoryBufferRef, MetadataSize: u64) -> LLVMBool;
@@ -119,6 +110,15 @@ extern "C" {
         FactoryDependencyKeys: *const *const ::libc::c_char,
         FactoryDependencyValues: *const ::libc::c_char,
         FactoryDependenciesSize: u64,
+        ErrorMessage: *mut *mut ::libc::c_char,
+    ) -> LLVMBool;
+
+    /// Add metadata to the ELF-wrapped module.
+    pub fn LLVMAddMetadata(
+        InMemBuf: LLVMMemoryBufferRef,
+        MetadataPtr: *const ::libc::c_char,
+        MetadataSize: u64,
+        OutMemBuf: *mut LLVMMemoryBufferRef,
         ErrorMessage: *mut *mut ::libc::c_char,
     ) -> LLVMBool;
 
