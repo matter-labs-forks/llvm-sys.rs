@@ -450,6 +450,8 @@ fn get_system_libcpp() -> Option<&'static str> {
         Some("c++")
     } else if target_os_is("freebsd") || target_os_is("openbsd") {
         Some("c++")
+    } else if target_env_is("musl") {
+        Some("c++")
     } else {
         // Otherwise assume GCC's libstdc++.
         // This assumption is probably wrong on some platforms, but it can be
@@ -485,6 +487,7 @@ fn get_link_libraries(
     fn get_link_libraries_impl(
         llvm_config_path: &Path,
         kind: LibraryKind,
+        project: Option<&str>,
     ) -> anyhow::Result<String> {
         // Windows targets don't get dynamic support.
         // See: https://gitlab.com/taricorp/llvm-sys.rs/-/merge_requests/31#note_1306397918
@@ -496,7 +499,11 @@ fn get_link_libraries(
             LibraryKind::Static => "--link-static",
             LibraryKind::Dynamic => "--link-shared",
         };
-        llvm_config_ex(llvm_config_path, ["--libnames", link_arg])
+        let mut args = vec!["--libnames", link_arg];
+        if let Some(project) = project {
+            args.push(project);
+        }
+        llvm_config_ex(llvm_config_path, args)
     }
 
     let LinkingPreferences {
@@ -517,15 +524,21 @@ fn get_link_libraries(
         });
 
     for kind in preferences {
-        match get_link_libraries_impl(llvm_config_path, kind) {
-            Ok(s) => return (kind, extract_library(&s, kind)),
-            Err(err) => {
-                println!(
-                    "failed to get {} libraries from llvm-config: {err:?}",
-                    kind.string()
-                )
+        let mut libraries = Vec::new();
+        for project in [None, Some("lld")] {
+            match get_link_libraries_impl(llvm_config_path, kind, project) {
+                Ok(s) => {
+                    libraries.extend(extract_library(&s, kind));
+                }
+                Err(err) => {
+                    println!(
+                        "failed to get {} libraries from llvm-config: {err:?}",
+                        kind.string()
+                    );
+                }
             }
         }
+        return (kind, libraries);
     }
 
     panic!("failed to get linking libraries from llvm-config",);
@@ -714,11 +727,26 @@ fn main() {
     // Link system libraries
     // We get the system libraries based on the kind of LLVM libraries we link to, but we link to
     // system libs based on the target environment.
-    let sys_lib_kind = if cfg!(target_feature = "crt-static") {
+    let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or(String::new());
+    let sys_lib_kind = if target_env_is("musl") || linkage.contains("crt-static") {
         LibraryKind::Static
     } else {
         LibraryKind::Dynamic
     };
+
+    // Add search paths for the Linux system static libraries
+    // when linking with GNU libc and libstdc++ statically.
+    // These paths cannot be added automatically by llvm-config.
+    if linkage.contains("crt-static") && target_env_is("gnu") {
+        let arch = env::var("CARGO_CFG_TARGET_ARCH")
+            .expect("Unable to define search paths for system static libraries: CARGO_CFG_TARGET_ARCH is not set.");
+        println!("cargo:rustc-link-search=native=/lib/{}-linux-gnu", arch);
+        println!(
+            "cargo:rustc-link-search=native=/lib/gcc/{}-linux-gnu/11",
+            arch
+        );
+    }
+
     for name in get_system_libraries(&llvm_config_path, kind) {
         println!("cargo:rustc-link-lib={}={}", sys_lib_kind.string(), name);
     }
