@@ -136,6 +136,20 @@ extern "C" {
     pub fn LLVMInitializeWebAssemblyAsmPrinter();
     pub fn LLVMInitializeWebAssemblyAsmParser();
     pub fn LLVMInitializeWebAssemblyDisassembler();
+
+    pub fn LLVMInitializeEraVMTargetInfo();
+    pub fn LLVMInitializeEraVMTarget();
+    pub fn LLVMInitializeEraVMTargetMC();
+    pub fn LLVMInitializeEraVMAsmPrinter();
+    pub fn LLVMInitializeEraVMAsmParser();
+    pub fn LLVMInitializeEraVMDisassembler();
+
+    pub fn LLVMInitializeEVMTargetInfo();
+    pub fn LLVMInitializeEVMTarget();
+    pub fn LLVMInitializeEVMTargetMC();
+    pub fn LLVMInitializeEVMAsmPrinter();
+    pub fn LLVMInitializeEVMAsmParser();
+    pub fn LLVMInitializeEVMDisassembler();
 }
 
 extern "C" {
