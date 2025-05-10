@@ -22,8 +22,8 @@ extern "C" {
     /// Returns EVM immutables and their offsets of the ELF object file passed in `InMemBuf`.
     pub fn LLVMGetImmutablesEVM(
         InMemBuf: LLVMMemoryBufferRef,
-        immutableIDs: *mut *mut *mut ::libc::c_char,
-        immutableOffsets: *mut *mut u64,
+        ImmutableIDs: *mut *mut *mut ::libc::c_char,
+        ImmutableOffsets: *mut *mut u64,
     ) -> u64;
 
     /// Links all EVM dependencies with the main module.
@@ -53,10 +53,20 @@ extern "C" {
 
     /// Dispose immutable names and their offsets returned by LLVMGetImmutablesEVM.
     pub fn LLVMDisposeImmutablesEVM(
-        immutableIDs: *const *const ::libc::c_char,
-        immutableOffsets: *const u64,
-        numOfImmutables: u64,
+        ImmutableIDs: *const *const ::libc::c_char,
+        ImmutableOffsets: *const u64,
+        NumOfImmutables: u64,
     );
+
+    /// Returns an array of offsets for the linker symbol relocations of the ELF object file.
+    pub fn LLVMGetSymbolOffsetsEVM(
+        InMemBuf: LLVMMemoryBufferRef,
+        SymbolName: *const ::libc::c_char,
+        SymbolOffsets: *mut *mut u64,
+    ) -> u64;
+
+    /// Releases the array of linker symbol offsets.
+    pub fn LLVMDisposeSymbolOffsetsEVM(SymbolOffsets: *const u64);
 
     /// Translate textual assembly to object code.
     ///
