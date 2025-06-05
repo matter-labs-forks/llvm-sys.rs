@@ -117,6 +117,9 @@ extern "C" {
 
     /// Obtain a Type from a context by its registered name.
     pub fn LLVMGetTypeByName2(C: LLVMContextRef, Name: *const ::libc::c_char) -> LLVMTypeRef;
+
+    /// Get the size of the spill area required for recompilation of an EVM translation unit.
+    pub fn LLVMGetSpillAreaSizeEVM(C: LLVMContextRef) -> u64;
 }
 
 // Core->Modules
