@@ -2,6 +2,9 @@
 
 use super::*;
 
+/// A callback function type for handling EVM stack-too-deep errors.
+pub type LLVMStackErrorHandlerEVM = unsafe extern "C" fn(SpillAreaSize: u64);
+
 // Core
 extern "C" {
     pub fn LLVMShutdown();
@@ -12,6 +15,9 @@ extern "C" {
     );
     pub fn LLVMCreateMessage(Message: *const ::libc::c_char) -> *mut ::libc::c_char;
     pub fn LLVMDisposeMessage(Message: *mut ::libc::c_char);
+
+    /// Sets the callback that will be called when an EVM stack-too-deep error is encountered.
+    pub fn LLVMInstallEVMStackErrorHandler(handler: LLVMStackErrorHandlerEVM);
 }
 
 // Core->Contexts
